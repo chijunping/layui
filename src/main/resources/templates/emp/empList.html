@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>empList</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/layuimini.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/themes/default.css}" media="all">
+    <link rel="stylesheet" th:href="@{/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">
+    <style>
+
+        .div-content{
+            height: 200px;
+            background-color:white;
+            border-radius: 5px;
+        }
+        .table-search-fieldset{
+            margin: 0;
+            border: 1px solid #e6e6e6;
+            padding:10px 20px 5px 20px;
+            color: #6b6b6b;
+        }
+    </style>
+</head>
+<body>
+<div class="div-content">
+    <form class="layui-form layui-form-pane" action="">
+    <fieldset class="table-search-fieldset">
+        <legend>搜索条件</legend>
+
+        <div class="layui-form-item">
+
+            <div class="layui-inline">
+                <label class="layui-form-label">姓名</label>
+                <div class="layui-input-inline" style="width: 180px;">
+                    <input type="text" name="name" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label">生日</label>
+                <div class="layui-input-inline" style="width: 150px;">
+                    <input type="text" id="startDate" name="startDate" placeholder="开始日期" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid">-</div>
+                <div class="layui-input-inline" style="width: 150px;">
+                    <input type="text" id="endDate" name="endDate" placeholder="结束日期" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <button lay-submit lay-filter="btn-search-filter" class="layui-btn layui-btn-radius layui-btn-normal">
+                    <i class="layui-icon layui-icon-search"></i>
+                    搜索</button>
+            </div>
+
+        </div>
+
+    </fieldset>
+    </form>
+    <table id="table-emp" lay-filter="table-emp-filter"></table>
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    // var ctxPath=[[@{/}]];
+    //日期设置
+    layui.use(['laydate','table','form'], function(){
+        var laydate = layui.laydate;
+        var table = layui.table;
+        var form = layui.form;
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#startDate,#endDate' //指定元素
+        });
+
+        //员工列表表格渲染
+        table.render({
+            elem: '#table-emp'
+            ,url: '/emp/list' //数据接口
+            ,page: true //开启分页
+            ,limits :[5,10,20,30,50]
+            ,cols: [
+                [ //表头
+                {field: 'empId', title: '员工编号', width:120, sort: true }
+                ,{field: 'name', title: '姓名', width:80}
+                ,{field: 'sex', title: '性别', width:80,templet: function(d){if(d.sex == 1){return '男'}else{return '女'}}}
+                ,{field: 'age', title: '年龄', width:90, sort: true}
+                ,{field: 'sal', title: '工资', width: 100, sort: true}
+                ,{field: 'deptId', title: '部门ID', width: 100, sort: true}
+                ,{field: 'birthday', title: '生日', width: 120, sort: true }
+                ,{field: 'address', title: '住址'}
+                ,{title: '操作',width: 135}
+            ]
+            ]
+        });
+
+        //监听表单提交
+        form.on('submit(btn-search-filter)',function(data){
+        console.log(data.field);
+        //刷新表格
+            table.reload('table-emp', {
+                where: { //设定异步数据接口的额外参数，任意设
+
+                   name:data.field.name,
+                   startDate:data.field.startDate,
+                   endDate:data.field.endDate
+                }
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            }); //只重载数据
+            return false;//阻止跳转。如果需要表单跳转就去掉
+        })
+
+    });
+
+</script>
+</body>
+</html>

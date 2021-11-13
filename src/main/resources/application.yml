@@ -1,0 +1,28 @@
+#端口 数据源 thymeleaf、mybatis、表单转换
+server:
+  port: 8080
+
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/laydb?serverTimezone=GMT%2B8
+
+  thymeleaf:
+    cache: false
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: GMT+8
+
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.example.*.pojo #别名
+  configuration:
+    map-underscore-to-camel-case: true #驼峰转换
+logging:
+  level:
+    com.example: debug

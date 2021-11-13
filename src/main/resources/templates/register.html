@@ -1,0 +1,102 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-form">
+<form class="layui-form" action="">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">登录用户名</label>
+        <div class="layui-input-block">
+            <input type="text" name="username" lay-verify="required" lay-reqtext="用户名不能为空" placeholder="请输入用户名" value="" class="layui-input">
+            <tip>填写自己管理账号的名称。</tip>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">真实姓名</label>
+        <div class="layui-input-block">
+            <input type="text" name="chName" lay-verify="required" lay-reqtext="姓名不能为空" placeholder="请输入真实姓名" value="" class="layui-input">
+            <tip>填写自己的真实姓名。</tip>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">密码</label>
+        <div class="layui-input-block">
+            <input type="password" name="password" lay-verify="required|password" lay-reqtext="密码不能为空" autocomplete="off" placeholder="请输入密码" value="" class="layui-input">
+            <tip>填写密码。</tip>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" id="btn-reg" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+
+</form>
+</div>
+
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/lib/jquery-3.4.1/jquery-3.4.1.min.js}" charset="utf-8"></script>
+<script th:src="@{/lib/jq-module/jquery.particleground.min.js}" charset="utf-8"></script>
+<script th:inline="javascript">
+
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer;
+
+
+        //监听提交
+        // form.on('submit(saveBtn)', function (data) {
+        //     console.log(data);
+        //     var index = layer.alert(JSON.stringify(data.field), {
+        //         title: '最终的提交信息'
+        //     }, function () {
+        //         // 关闭弹出层
+        //         layer.close(index);
+        //         var iframeIndex = parent.layer.getFrameIndex(window.name);
+        //         parent.layer.close(iframeIndex);
+        //     });
+        //     return false;
+        // });
+
+
+        //进行注册操作 监听提交
+        form.on('submit(saveBtn)',function (data){
+            console.log(data);
+            data=data.field;
+            //异步注册请求
+            var url = "user/register";
+             $.post(url,data,function(response){
+
+                console.log(data);
+                if(response.code==0){
+                    layer.msg(response.message,{icon:6,time:2000}, function () {
+                        window.location = '/login';
+                    });
+                }else {
+                    layer.msg(response.message,{icon:5,anim:6});
+                }
+
+             });
+            return false;
+        })
+
+    });
+</script>
+</body>
+</html>

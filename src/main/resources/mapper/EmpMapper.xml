@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.EmpMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.pojo.Emp">
+            <id property="empId" column="emp_id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="CHAR"/>
+            <result property="sex" column="sex" jdbcType="CHAR"/>
+            <result property="age" column="age" jdbcType="INTEGER"/>
+            <result property="sal" column="sal" jdbcType="DOUBLE"/>
+            <result property="birthday" column="birthday" jdbcType="DATE"/>
+            <result property="address" column="address" jdbcType="CHAR"/>
+            <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        emp_id,name,sex,
+        age,sal,birthday,
+        address,dept_id
+    </sql>
+
+    <sql id="getEmpListWhere">
+        <where>
+            <if test="name != null">
+                name like "%" #{name} "%"
+            </if>
+            <if test="startDate != null">
+                <![CDATA[
+            birthday >=#{startDate}
+            ]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[
+            birthday < #{endDate}
+            ]]>
+            </if>
+        </where>
+    </sql>
+
+
+    <select id="getEmpList" parameterType="com.example.vo.EmpQuery" resultMap="BaseResultMap">
+        select * from emp
+        <include refid="getEmpListWhere"></include>
+        limit #{start},#{limit}
+    </select>
+
+    <select id="countEmpList" parameterType="com.example.vo.EmpQuery" resultType="Long">
+        select count(1) from emp
+        <include refid="getEmpListWhere"></include>
+        limit #{start},#{limit}
+    </select>
+</mapper>
