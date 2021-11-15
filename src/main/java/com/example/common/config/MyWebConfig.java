@@ -37,7 +37,8 @@ public class MyWebConfig implements WebMvcConfigurer {
                 "/images/**",  //静态资源图片
                 "/register",    //注册页面
                 "/user/register",
-                "/welcome"
+                "/welcome1"    //欢迎界面
+                  //增加员工
 
 
         );

@@ -12,4 +12,9 @@
     <sql id="Base_Column_List">
         dept_id,dept_name
     </sql>
+
+    <select id="getAllDept" resultMap="BaseResultMap">
+        select * from dept;
+
+    </select>
 </mapper>

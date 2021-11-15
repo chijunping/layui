@@ -13,6 +13,10 @@
             <result property="birthday" column="birthday" jdbcType="DATE"/>
             <result property="address" column="address" jdbcType="CHAR"/>
             <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <association property="dept" column="dept_id" javaType="com.example.pojo.Dept">
+        <id column="dept_id" property="deptId"></id>
+            <result property="deptName" column="dept_name"></result>
+        </association>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -24,16 +28,16 @@
     <sql id="getEmpListWhere">
         <where>
             <if test="name != null">
-                name like "%" #{name} "%"
+                a.name like "%" #{name} "%"
             </if>
             <if test="startDate != null">
                 <![CDATA[
-            birthday >=#{startDate}
+          and  a.birthday >=#{startDate}
             ]]>
             </if>
             <if test="endDate != null">
                 <![CDATA[
-            birthday < #{endDate}
+           and a.birthday < #{endDate}
             ]]>
             </if>
         </where>
@@ -41,14 +45,24 @@
 
 
     <select id="getEmpList" parameterType="com.example.vo.EmpQuery" resultMap="BaseResultMap">
-        select * from emp
+        select * from emp a left join dept b on a.dept_id = b.dept_id
         <include refid="getEmpListWhere"></include>
         limit #{start},#{limit}
     </select>
 
     <select id="countEmpList" parameterType="com.example.vo.EmpQuery" resultType="Long">
-        select count(1) from emp
+        select count(1) from emp a
         <include refid="getEmpListWhere"></include>
         limit #{start},#{limit}
     </select>
+    
+    <insert id="addEmp" parameterType="com.example.pojo.Emp">
+        insert into emp
+        (name,sex,age,sal,birthday,address,dept_id)
+        values
+        (#{name},#{sex},#{age},#{sal},#{birthday},#{address},#{deptId})
+    </insert>
+    <delete id="delemp">
+        delete from emp where emp_id in (${empId})
+    </delete>
 </mapper>

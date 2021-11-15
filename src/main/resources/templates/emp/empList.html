@@ -48,9 +48,12 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <button lay-submit lay-filter="btn-search-filter" class="layui-btn layui-btn-radius layui-btn-normal">
+                <button id="btn-search" lay-submit lay-filter="btn-search-filter" class="layui-btn layui-btn-radius layui-btn-normal">
                     <i class="layui-icon layui-icon-search"></i>
                     搜索</button>
+                <button id="btn-reset" type="reset" class="layui-btn layui-btn-radius layui-btn-normal">
+                    <i class="layui-icon layui-icon-refresh"></i>
+                    清空条件</button>
             </div>
 
         </div>
@@ -59,47 +62,119 @@
     </form>
     <table id="table-emp" lay-filter="table-emp-filter"></table>
 </div>
-<script th:src="@{/layui/layui.js}"></script>
-<script>
-    // var ctxPath=[[@{/}]];
+<script th:src="@{/lib/jquery-3.4.1/jquery-3.4.1.min.js}" charset="utf-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/lib/jq-module/jquery.particleground.min.js}" charset="utf-8"></script>
+<!--部门名称-->
+<script type="text/html" id="convertDept">
+{{#
+    return d.dept.deptName;
+}}
+</script>
+
+<!--表格-->
+<script type="text/html" id="tabletoolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除</button>
+    </div>
+</script>
+<!--表格内按钮-->
+<script type="text/html" id="bartool">
+    <a  class="layui-btn layui-btn-xs" lay-event="del"  >删除</a>
+    <a  class="layui-btn layui-btn-danger layui-btn-xs" lay-event="edit" >编辑</a>
+</script>
+
+
+<script th:inline="javascript">
+    //刷新表格
+    function refreshTable(){
+        $("#btn-reset").click();
+        $("#btn-search").click();
+    }
+
+
+    var ctxPath=[[@{/}]];
     //日期设置
     layui.use(['laydate','table','form'], function(){
         var laydate = layui.laydate;
         var table = layui.table;
         var form = layui.form;
+
         //执行一个laydate实例
         laydate.render({
             elem: '#startDate,#endDate' //指定元素
+            ,calendar: true //显示节日
+        });
+
+        //表格监听工具栏 添加 批量删除
+        table.on('toolbar(table-emp-filter)', function(obj){
+          if(obj.event=='add'){
+              layer.open({
+                  type: 2,
+                  titile:'增加员工',
+                  area:['90%','90%'],
+                  content:'emp/add/ui' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+              });
+          }else if(obj.event=='delete'){
+              var checkStatus = table.checkStatus('table-emp');
+              //如果没有选中任何数据
+              if(checkStatus.data.length==0){
+                  layer.alert("请至少选择一个", {icon: 7,title:"警告"});
+                  return false;
+              }
+              var idArr =new Array();
+              $(checkStatus.data).each(function(){
+                  idArr.push(this.empId);
+              });
+
+              layer.confirm('是否确定删除?', {icon: 3, title:'提示'}, function(index){
+                  //异步请求删除 结果提示 刷新表格
+                  var url=ctxPath + "emp/delemp/"+idArr.join(",");
+                  var params ={
+                      _method:"DELETE"
+                  }
+                  $.post(url,params,function(response){
+                      if(response.code==0){
+                          layer.msg(response.message,{icon:7,title:"操作结果"}, function () {
+                              refreshTable();
+                          });
+                      }
+                  })
+                  layer.close(index);
+              });
+          }
         });
 
         //员工列表表格渲染
         table.render({
             elem: '#table-emp'
+            ,toolbar:"#tabletoolbar"
             ,url: '/emp/list' //数据接口
             ,page: true //开启分页
             ,limits :[5,10,20,30,50]
             ,cols: [
                 [ //表头
-                {field: 'empId', title: '员工编号', width:120, sort: true }
+                    {type:"checkbox",width: 60},
+                 {field: 'empId', title: '员工编号', width:120, sort: true }
                 ,{field: 'name', title: '姓名', width:80}
                 ,{field: 'sex', title: '性别', width:80,templet: function(d){if(d.sex == 1){return '男'}else{return '女'}}}
                 ,{field: 'age', title: '年龄', width:90, sort: true}
                 ,{field: 'sal', title: '工资', width: 100, sort: true}
-                ,{field: 'deptId', title: '部门ID', width: 100, sort: true}
+                ,{field: 'dept', title: '部门', width: 100, sort: true,templet:"#convertDept"}
                 ,{field: 'birthday', title: '生日', width: 120, sort: true }
                 ,{field: 'address', title: '住址'}
-                ,{title: '操作',width: 135}
+                ,{title: '操作',width: 135,toolbar:'#bartool'}
             ]
             ]
         });
 
-        //监听表单提交
+        //监听表格上方查询表单提交
         form.on('submit(btn-search-filter)',function(data){
         console.log(data.field);
         //刷新表格
             table.reload('table-emp', {
                 where: { //设定异步数据接口的额外参数，任意设
-
                    name:data.field.name,
                    startDate:data.field.startDate,
                    endDate:data.field.endDate
@@ -110,6 +185,36 @@
             }); //只重载数据
             return false;//阻止跳转。如果需要表单跳转就去掉
         })
+
+        //表格内的 删除更新 事件
+        table.on('tool(table-emp-filter)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+           if(layEvent == 'del'){ //删除
+               layer.confirm('是否确定删除?'+data.name, {icon: 3, title:'提示'}, function(index){
+                   //异步请求删除 结果提示 刷新表格
+                   var url=ctxPath + "emp/delemp/"+data.empId;
+                   var params ={
+                       _method:"DELETE"
+                   }
+                   $.post(url,params,function(response){
+                       if(response.code==0){
+                           layer.msg(response.message,{icon:7,title:"操作结果"}, function () {
+                               refreshTable();
+                           });
+                       }
+                   })
+
+                   layer.close(index);
+               });
+
+            } else if(layEvent == 'edit'){ //编辑
+
+
+            }
+        });
+
 
     });
 

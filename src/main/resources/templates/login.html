@@ -51,7 +51,7 @@
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-vercode" for="captcha"></label>
                     <input type="text" name="captcha" lay-verify="required|captcha" placeholder="图形验证码" autocomplete="off" class="layui-input verification captcha" value="xszg">
-                    <div class="captcha-img">
+                    <div class="captcha-img" >
                         <img th:src="@{/captcha}" id="captcha" width="130px" height="48px" alt="">
                     </div>
                 </div>
@@ -134,6 +134,7 @@
             }else {
                 layer.msg(response.message,{icon:5,anim:6});
                 $("#btn-login").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                $("#captcha").click();
             }
 
             });

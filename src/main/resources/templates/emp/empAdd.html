@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>empList</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/layuimini.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/themes/default.css}" media="all">
+    <link rel="stylesheet" th:href="@{/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">
+
+</head>
+<body>
+
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">姓名:</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" required  lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">性别:</label>
+        <div class="layui-input-block">
+            <input type="radio" name="sex" value="1" title="男" checked>
+            <input type="radio" name="sex" value="0" title="女" >
+        </div>
+    </div>
+
+
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">年龄:</label>
+        <div class="layui-input-block">
+            <input type="text" name="age" required  lay-verify="required|number" placeholder="请输入年龄" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">工资:</label>
+        <div class="layui-input-block">
+            <input type="text" name="sal" required  lay-verify="required|number" placeholder="请输入工资" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">生日:</label>
+        <div class="layui-input-block">
+            <input type="text" name="birthday" required  lay-verify="required" placeholder="请输入生日" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">部门</label>
+        <div class="layui-input-block">
+            <select name="deptId" lay-verify="required">
+                <option value="">请选择</option>
+                <option th:each="dept:${deptList}"  th:value="${dept.deptId}">
+                    <span th:text="${dept.deptName}"></span>
+                </option>
+
+            </select>
+        </div>
+    </div>
+
+
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">家庭地址</label>
+        <div class="layui-input-block">
+            <textarea name="address" placeholder="请输入家庭地址" class="layui-textarea"></textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button id="btn-submit" class="layui-btn" lay-submit lay-filter="addemp-filter">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+</form>
+
+
+
+<script th:src="@{/lib/jquery-3.4.1/jquery-3.4.1.min.js}" charset="utf-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/lib/jq-module/jquery.particleground.min.js}" charset="utf-8"></script>
+<script th:inline="javascript">
+    var ctxPath=[[@{/}]];
+    //日期设置
+    layui.use(['laydate','table','form'], function(){
+        var laydate = layui.laydate;
+        var table = layui.table;
+        var form = layui.form;
+        // var $=layui.$;
+
+        laydate.render({
+            elem:'[name="birthday"]'    //指定元素
+        });
+
+        //监听提交
+        form.on('submit(addemp-filter)', function(data){
+            $("#btn-submit").attr("disabled", "disabled").addClass("layui-btn-disabled");
+            //异步提交请求
+            var url = ctxPath+"emp/addEmp";
+            $.post(url,data.field,function(response){
+
+                if(response.code==0){
+                    layer.msg(response.message,{icon:6,time:2000}, function () {
+                        //刷新表格
+                        parent.refreshTable();
+                        //当你在iframe页面关闭自身时
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+
+                    });
+                }
+                else {
+                    $("#btn-submit").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                    layer.msg("新增失败请联系管理员",{icon:5,anim:6});
+                }
+
+            });
+
+            return false;
+        });
+
+
+    });
+
+</script>
+</body>
+</html>

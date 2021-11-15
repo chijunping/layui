@@ -18,4 +18,8 @@ public interface EmpMapper extends BaseMapper<Emp> {
     Long countEmpList(EmpQuery empQ);
 
     List<Emp> getEmpList(EmpQuery empQ);
+
+    void addEmp(Emp emp);
+
+    void delemp(Integer empId);
 }
