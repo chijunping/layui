@@ -3,6 +3,7 @@ package com.example.common.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.mapper.DeptMapper;
+import com.example.pojo.Emp;
 import com.example.pojo.User;
 import com.example.service.DeptService;
 import com.example.service.EmpService;
@@ -40,6 +41,11 @@ public class CommonController {
         return "welcome";
     }
 
+    @GetMapping("/welcome1")
+    public String welcome1(){
+        return "welcome1";
+    }
+
     @GetMapping("/register")
     public String register(){
         return "register";
@@ -49,5 +55,7 @@ public class CommonController {
     public void captcha(HttpServletRequest request, HttpServletResponse response)throws Exception{
         CaptchaUtil.out(request, response);
     }
+
+
 }
 

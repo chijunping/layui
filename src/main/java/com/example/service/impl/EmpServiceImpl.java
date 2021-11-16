@@ -48,4 +48,15 @@ implements EmpService {
     public void delemp(Integer empId) {
         empMapper.delemp(empId);
     }
+
+    @Override
+    public Emp getOne(Integer id) {
+
+        return empMapper.getOne(id);
+    }
+
+    @Override
+    public void update(Emp emp) {
+         empMapper.updateEmp(emp);
+    }
 }

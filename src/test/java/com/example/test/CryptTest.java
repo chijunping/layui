@@ -1,6 +1,11 @@
 package com.example.test;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.common.vo.Result;
+import com.example.pojo.Emp;
+import com.example.service.EmpService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.DigestUtils;
 
@@ -24,4 +29,7 @@ public class CryptTest {
         boolean matches = passwordEncoder.matches("123456", "$2a$10$Rk7OFBuNQgRAdiPKGfIjBOh1VG34jdW5gR.VKIREuEfGieRdQlXDa");
         System.out.println(matches);
 
-    }}
+    }
+
+
+}

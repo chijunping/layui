@@ -65,4 +65,21 @@
     <delete id="delemp">
         delete from emp where emp_id in (${empId})
     </delete>
+
+    <select id="getOne" resultMap="BaseResultMap">
+        select * from emp where emp_id =#{id}
+    </select>
+
+    <update id="updateEmp" parameterType="com.example.pojo.Emp">
+        update emp set
+        name=#{name},
+        sex=#{sex},
+        sal=#{sal},
+        age=#{age},
+        birthday=#{birthday},
+        address=#{address},
+        dept_id=#{deptId}
+        where emp_id=#{empId}
+
+    </update>
 </mapper>

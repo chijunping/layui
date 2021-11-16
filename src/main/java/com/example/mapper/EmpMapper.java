@@ -22,4 +22,8 @@ public interface EmpMapper extends BaseMapper<Emp> {
     void addEmp(Emp emp);
 
     void delemp(Integer empId);
+
+    Emp getOne(Integer id);
+
+    void updateEmp(Emp emp);
 }

@@ -2,12 +2,10 @@ package com.example.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.mapper.EmpMapper;
 import com.example.pojo.Dept;
 import com.example.pojo.Emp;
 import com.example.vo.EmpQuery;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -24,4 +22,8 @@ public interface EmpService extends IService<Emp> {
     List<Dept> getAllDept();
 
     void delemp(Integer empId);
+
+    Emp getOne(Integer id);
+
+    void update(Emp emp);
 }

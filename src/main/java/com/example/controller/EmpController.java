@@ -1,6 +1,7 @@
 package com.example.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.common.vo.Result;
 import com.example.pojo.Dept;
 import com.example.pojo.Emp;
@@ -20,6 +21,7 @@ public class EmpController {
     @Autowired
     private  EmpService empService;
 
+    //init.json 直接进入到empList页面中
     @GetMapping("")
     public String toEmpListUI(){
         return "emp/empList";
@@ -27,6 +29,8 @@ public class EmpController {
 
 
 
+
+    //表格信息接口
     @GetMapping("/list")
     @ResponseBody
     public Result<Object> getEmpList(EmpQuery empQ){
@@ -36,6 +40,7 @@ public class EmpController {
         return Result.success(list,"success", count);
     }
 
+    //新增员工接口
     @PostMapping("/addEmp")
     @ResponseBody
     public Result<Object> addEmp(Emp emp){
@@ -43,6 +48,7 @@ public class EmpController {
         return Result.success("新增员工成功");
     }
 
+    //进入到新增的页面 并且获取到所有的部门信息
     @GetMapping("/add/ui")
     public String toAddUI(Model model){
         List<Dept> deptList = empService.getAllDept();
@@ -55,9 +61,25 @@ public class EmpController {
     @ResponseBody
     public Result<Object> delemp(@PathVariable Integer empId ){
         empService.delemp(empId);
-
         return Result.success("删除成功");
     }
 
+
+    //根据Id查询员工并跳转到对应的页面
+    @GetMapping("/getOne/{id}")   //从empList中点击修改跳转到这里获取到信息后再跳转到修改页面上
+    public String getOne(@PathVariable("id") Integer id,Model model){
+        Emp emp = empService.getOne(id);
+        model.addAttribute("emp",emp);  //修改页面获取选中员工的信息
+        model.addAttribute("deptList",empService.getAllDept()); //修改页面获取部门名称
+      return "emp/empEdit";  //跳转到empEdit页面
+    }
+
+    //具体修改操作接口
+    @PutMapping("/updateemp")
+    @ResponseBody
+    public Result<Object> updateemp(Emp emp){
+        empService.update(emp);
+        return Result.success("修改成功");
+    }
 
 }
