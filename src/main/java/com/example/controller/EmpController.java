@@ -27,9 +27,6 @@ public class EmpController {
         return "emp/empList";
     }
 
-
-
-
     //表格信息接口
     @GetMapping("/list")
     @ResponseBody
@@ -63,7 +60,6 @@ public class EmpController {
         empService.delemp(empId);
         return Result.success("删除成功");
     }
-
 
     //根据Id查询员工并跳转到对应的页面
     @GetMapping("/getOne/{id}")   //从empList中点击修改跳转到这里获取到信息后再跳转到修改页面上

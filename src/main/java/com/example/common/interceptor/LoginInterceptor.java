@@ -17,7 +17,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if(userInfo ==null){
             //未登录
             //重定向到  controller login
-           log.debug("未登录请求:"+request.getRequestURI());
+            log.debug("未登录请求:"+request.getRequestURI());
             response.sendRedirect(request.getContextPath()+"/login");
             return false;
         }
