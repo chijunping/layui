@@ -24,9 +24,7 @@ public class UserController {
     @ResponseBody
     public Result login(User user, HttpSession session, @RequestParam("captcha") String captcha ,HttpServletRequest request){
         //根据用户名查出的user1   user是用户输入的账户和密码 首先判断是否查询出user1 !=null
-        System.out.println(user);
         User user1 = userService.login(user);
-
         //验证码验证
         if(!CaptchaUtil.ver(captcha, request)){
             CaptchaUtil.clear(request);
