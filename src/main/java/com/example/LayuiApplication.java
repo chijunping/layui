@@ -10,7 +10,6 @@ public class LayuiApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(LayuiApplication.class, args);
-        System.out.println("http://localhost:8080");
     }
 
 }

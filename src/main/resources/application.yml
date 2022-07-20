@@ -1,12 +1,12 @@
 #端口 数据源 thymeleaf、mybatis、表单转换
 server:
-  port: 8080
+  port: 9091
 
 spring:
   datasource:
     username: root
-    password: root
-    url: jdbc:mysql://localhost:3306/laydb?serverTimezone=GMT%2B8
+    password: everything@123456Qwqe
+    url: jdbc:mysql://120.79.149.40:3306/laydb?serverTimezone=GMT%2B8
 
   thymeleaf:
     cache: false
