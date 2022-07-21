@@ -53,9 +53,8 @@
     <select id="countEmpList" parameterType="com.example.vo.EmpQuery" resultType="Long">
         select count(1) from emp a
         <include refid="getEmpListWhere"></include>
-        limit #{start},#{limit}
     </select>
-    
+
     <insert id="addEmp" parameterType="com.example.pojo.Emp">
         insert into emp
         (name,sex,age,sal,birthday,address,dept_id)

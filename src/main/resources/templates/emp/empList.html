@@ -113,8 +113,9 @@
                         content: 'emp/add/ui' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
                     });
                 } else if (obj.event == 'delete') {
+                    //table-emp是受监听的表格的id
                     var checkStatus = table.checkStatus('table-emp');
-                    //如果没有选中任何数据
+                    //如果没有选中任何数据（checkStatus.data 表示选中的行的数据）
                     if (checkStatus.data.length == 0) {
                         layer.alert("请至少选择一个", {icon: 7, title: "警告"});
                         return false;
@@ -151,6 +152,7 @@
                 , limits: [5, 10, 20, 30, 50]
                 , cols: [
                     [ //表头
+                        //第一列是复选框
                         {type: "checkbox", width: 60}
                         , {field: 'empId', title: '员工编号', width: 120, sort: true}
                         , {field: 'name', title: '姓名', width: 80}
