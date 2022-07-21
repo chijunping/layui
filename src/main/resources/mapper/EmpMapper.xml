@@ -28,16 +28,16 @@
     <sql id="getEmpListWhere">
         <where>
             <if test="name != null">
-                a.name like "%" #{name} "%"
+                a.name like concat("%",'${name}',"%")
             </if>
             <if test="startDate != null">
                 <![CDATA[
-          and  a.birthday >=#{startDate}
+          and  a.birthday >=${startDate}
             ]]>
             </if>
             <if test="endDate != null">
                 <![CDATA[
-           and a.birthday < #{endDate}
+           and a.birthday < ${endDate}
             ]]>
             </if>
         </where>
@@ -47,7 +47,7 @@
     <select id="getEmpList" parameterType="com.example.vo.EmpQuery" resultMap="BaseResultMap">
         select * from emp a left join dept b on a.dept_id = b.dept_id
         <include refid="getEmpListWhere"></include>
-        limit #{start},#{limit}
+        limit ${start},${limit}
     </select>
 
     <select id="countEmpList" parameterType="com.example.vo.EmpQuery" resultType="Long">

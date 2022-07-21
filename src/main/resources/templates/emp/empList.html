@@ -69,13 +69,6 @@
 <script th:src="@{/lib/jquery-3.4.1/jquery-3.4.1.min.js}" charset="utf-8"></script>
 <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
 <script th:src="@{/lib/jq-module/jquery.particleground.min.js}" charset="utf-8"></script>
-<!--部门名称-->
-<script type="text/html" id="convertDept">
-    {{#
-    return d.dept.deptName;
-    }}
-</script>
-
 <!--表格-->
 <script type="text/html" id="tabletoolbar">
     <div class="layui-btn-container">
@@ -88,7 +81,6 @@
     <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="edit">编辑</a>
 </script>
-
 
 <script th:inline="javascript">
     //刷新表格
@@ -159,8 +151,8 @@
                 , limits: [5, 10, 20, 30, 50]
                 , cols: [
                     [ //表头
-                        {type: "checkbox", width: 60},
-                        {field: 'empId', title: '员工编号', width: 120, sort: true}
+                        {type: "checkbox", width: 60}
+                        , {field: 'empId', title: '员工编号', width: 120, sort: true}
                         , {field: 'name', title: '姓名', width: 80}
                         , {
                         field: 'sex', title: '性别', width: 80, templet: function (d) {
@@ -173,7 +165,9 @@
                     }
                         , {field: 'age', title: '年龄', width: 90, sort: true}
                         , {field: 'sal', title: '工资', width: 100, sort: true}
-                        , {field: 'dept', title: '部门', width: 100, sort: true, templet: "#convertDept"}
+                        , {field: 'dept', title: '部门', width: 100, sort: true, templet: function (d) {
+                            return d.dept.deptName;
+                           }}
                         , {field: 'birthday', title: '生日', width: 120, sort: true}
                         , {field: 'address', title: '住址'}
                         , {title: '操作', width: 135, toolbar: '#bartool'}
