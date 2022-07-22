@@ -76,10 +76,10 @@
         <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除</button>
     </div>
 </script>
-<!--表格内按钮-->
-<script type="text/html" id="bartool">
-    <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="edit">编辑</a>
+<!--表格内操作列的按钮-->
+<script type="text/html" id="columntoolbar">
+    <a class="layui-btn  layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn  layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
 </script>
 
 <script th:inline="javascript">
@@ -128,12 +128,10 @@
                     layer.confirm('是否确定删除?', {icon: 3, title: '提示'}, function (index) {
                         //异步请求删除 结果提示 刷新表格
                         var url = ctxPath + "emp/delemp/" + idArr.join(",");
-                        var params = {
-                            _method: "DELETE"
-                        }
+                        var params = {}
                         $.post(url, params, function (response) {
                             if (response.code == 0) {
-                                layer.msg(response.message, {icon: 7, title: "操作结果"}, function () {
+                                layer.msg(response.message, {icon: 7, title: "操作结果", time: 10}, function () {
                                     refreshTable();
                                 });
                             }
@@ -167,12 +165,14 @@
                     }
                         , {field: 'age', title: '年龄', width: 90, sort: true}
                         , {field: 'sal', title: '工资', width: 100, sort: true}
-                        , {field: 'dept', title: '部门', width: 100, sort: true, templet: function (d) {
+                        , {
+                        field: 'dept', title: '部门', width: 100, sort: true, templet: function (d) {
                             return d.dept.deptName;
-                           }}
+                        }
+                    }
                         , {field: 'birthday', title: '生日', width: 120, sort: true}
                         , {field: 'address', title: '住址'}
-                        , {title: '操作', width: 135, toolbar: '#bartool'}
+                        , {title: '操作', width: 135, toolbar: '#columntoolbar'}
                     ]
                 ]
             });
@@ -203,12 +203,10 @@
                     layer.confirm('是否确定删除?' + data.name, {icon: 3, title: '提示'}, function (index) {
                         //异步请求删除 结果提示 刷新表格
                         var url = ctxPath + "emp/delemp/" + data.empId;
-                        var params = {
-                            _method: "DELETE"
-                        }
+                        var params = {}
                         $.post(url, params, function (response) {
                             if (response.code == 0) {
-                                layer.msg(response.message, {icon: 7, title: "操作结果"}, function () {
+                                layer.msg(response.message, {icon: 7, title: "操作结果", time: 10}, function () {
                                     refreshTable();
                                 });
                             }
@@ -218,6 +216,7 @@
                     });
 
                 } else if (layEvent == 'edit') { //编辑
+                    //open 可以访问后端接口，进行页面跳转（这里是跳转到edit编辑页面）
                     layer.open({
                         type: 2,
                         titile: '修改员工',

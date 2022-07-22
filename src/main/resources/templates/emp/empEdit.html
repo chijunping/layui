@@ -107,7 +107,6 @@
             $("#btn-submit").attr("disabled", "disabled").addClass("layui-btn-disabled");
             //异步提交请求
             var url = ctxPath+"emp/updateemp";
-            data.field._method="PUT";
             $.post(url,data.field,function(response){
                 if(response.code==0){
                     layer.msg(response.message,{icon:6,time:2000}, function () {
